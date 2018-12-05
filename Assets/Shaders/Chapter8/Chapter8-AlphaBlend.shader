@@ -13,7 +13,7 @@ Shader "Unity Shaders Book/Chapter 8/Alpha Blend" {
 		Pass {
 			Tags { "LightMode"="ForwardBase" }
 
-			ZWrite Off     //此处要关闭深度写入,不然混合不起效果
+            ZWrite off     //避免后面物体渲染不出
 			Blend SrcAlpha OneMinusSrcAlpha
 			//开启混合,并设置混合因子 https://docs.unity3d.com/Manual/SL-Blend.html
 			//从上述文档上我们可以知道SrcAlpha对应的是SrcFactor,OneMinusSrcAlpha对应的是DstFactor. 前者和片元生成的颜色相乘;后者和已存在颜色缓冲区的颜色相乘,然后将两者相加得到混合色值
@@ -70,7 +70,9 @@ Shader "Unity Shaders Book/Chapter 8/Alpha Blend" {
 
 				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
 				
-				return fixed4(ambient + diffuse, texColor.a * _AlphaScale);   //将alpha值进行混合,混合过程根据Blend指令自动完成
+				return fixed4(ambient + diffuse, texColor.a * _AlphaScale); 
+				//将alpha值进行混合,混合过程根据Blend指令自动完成
+				//开启Blend指令后透明通道才有作用  
 			}
 			
 			ENDCG

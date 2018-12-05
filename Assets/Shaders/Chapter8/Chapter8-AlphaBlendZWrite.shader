@@ -3,21 +3,25 @@
 
 Shader "Unity Shaders Book/Chapter 8/Alpha Blending With ZWrite" {
 	Properties {
-		_Color ("Color Tint", Color) = (1, 1, 1, 1)
-		_MainTex ("Main Tex", 2D) = "white" {}
-		_AlphaScale ("Alpha Scale", Range(0, 1)) = 1
+		_Color("Color Tint", Color) = (1, 1, 1, 1)
+		_MainTex("Main Tex", 2D) = "white" {}
+		_AlphaScale("Alpha Scale", Range(0, 1)) = 1
 	}
 	SubShader {
-		Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+		Tags {"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent"}
 		
 		// Extra pass that renders to depth buffer only
 		Pass {
 			ZWrite On
 			ColorMask 0
+			//ColorMask可 让我们指定渲染结果的输出通道,而不是通常情况下的RGBA这4个通道。
+			//可选参数是RGBA的任意组合以及0,这将意味着不会写入到任何通道,可以用来单独做—次Z测试,而不将结果写入颜色通道 
+			//如果参数为0，那么不会写入任何通道，但是会做一次深度测试，并将深度值写入深度缓冲区。
+			//多一个pass对性能会产生影响
 		}
 		
 		Pass {
-			Tags { "LightMode"="ForwardBase" }
+			Tags {"LightMode" = "ForwardBase"}
 			
 			ZWrite Off
 			Blend SrcAlpha OneMinusSrcAlpha
@@ -25,58 +29,58 @@ Shader "Unity Shaders Book/Chapter 8/Alpha Blending With ZWrite" {
 			CGPROGRAM
 			
 			#pragma vertex vert
-			#pragma fragment frag
-			
+				#pragma fragment frag
+				
 			#include "Lighting.cginc"
-			
-			fixed4 _Color;
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
-			fixed _AlphaScale;
+				
+			fixed4 _Color; 
+			sampler2D _MainTex; 
+			float4 _MainTex_ST; 
+			fixed _AlphaScale; 
 			
 			struct a2v {
-				float4 vertex : POSITION;
-				float3 normal : NORMAL;
-				float4 texcoord : TEXCOORD0;
-			};
+				float4 vertex : POSITION; 
+				float3 normal : NORMAL; 
+				float4 texcoord : TEXCOORD0; 
+			}; 
 			
 			struct v2f {
-				float4 pos : SV_POSITION;
-				float3 worldNormal : TEXCOORD0;
-				float3 worldPos : TEXCOORD1;
-				float2 uv : TEXCOORD2;
-			};
+				float4 pos : SV_POSITION; 
+				float3 worldNormal : TEXCOORD0; 
+				float3 worldPos : TEXCOORD1; 
+				float2 uv : TEXCOORD2; 
+			}; 
 			
 			v2f vert(a2v v) {
-				v2f o;
-				o.pos = UnityObjectToClipPos(v.vertex);
+				v2f o; 
+				o.pos = UnityObjectToClipPos(v.vertex); 
 				
-				o.worldNormal = UnityObjectToWorldNormal(v.normal);
+				o.worldNormal = UnityObjectToWorldNormal(v.normal); 
 				
-				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+				o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz; 
 				
-				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex);
+				o.uv = TRANSFORM_TEX(v.texcoord, _MainTex); 
 				
-				return o;
+				return o; 
 			}
 			
 			fixed4 frag(v2f i) : SV_Target {
-				fixed3 worldNormal = normalize(i.worldNormal);
-				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+				fixed3 worldNormal = normalize(i.worldNormal); 
+				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos)); 
 				
-				fixed4 texColor = tex2D(_MainTex, i.uv);
+				fixed4 texColor = tex2D(_MainTex, i.uv); 
 				
-				fixed3 albedo = texColor.rgb * _Color.rgb;
+				fixed3 albedo = texColor.rgb * _Color.rgb; 
 				
-				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo; 
 				
-				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir)); 
 				
-				return fixed4(ambient + diffuse, texColor.a * _AlphaScale);
+				return fixed4(ambient + diffuse, texColor.a * _AlphaScale); 
 			}
 			
 			ENDCG
 		}
-	} 
+	}
 	FallBack "Transparent/VertexLit"
 }
