@@ -59,7 +59,7 @@ Shader "Unity Shaders Book/Chapter 8/Alpha Test" {
 				fixed4 texColor = tex2D(_MainTex, i.uv);  //tex2D就是对图像的UV坐标进行采样获取顶点颜色的过程
 				
 				// Alpha test
-				clip (texColor.a - _Cutoff);   //结果小于0就裁剪
+				clip (texColor.a - _Cutoff);   //结果小于0就裁剪.   核心代码就这一句,其他什么光照相关的非3D游戏没必要
 				// Equal to 
 //				if ((texColor.a - _Cutoff) < 0.0) {
 //					discard;

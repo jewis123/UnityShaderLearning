@@ -14,9 +14,11 @@ Shader "Unity Shaders Book/Chapter 8/Alpha Blend" {
 			Tags { "LightMode"="ForwardBase" }
 
 			ZWrite Off
+			Blend SrcAlpha OneMinusSrcAlpha
 			//开启混合,并设置混合因子 https://docs.unity3d.com/Manual/SL-Blend.html
-			//The value of this stage is multiplied by (1 - source alpha).
-			Blend SrcAlpha OneMinusSrcAlpha   
+			//从上述文档上我们可以知道SrcAlpha对应的是SrcFactor,OneMinusSrcAlpha对应的是DstFactor. 前者和片元生成的颜色相乘;后者和已存在颜色缓冲区的颜色相乘,然后将两者相加得到混合色值
+			//相当于:  NewDstColor = SrcAlpha *SrcColor + (1-SrcAlpha)*OldDstColor 结果写入颜色缓冲区
+			//SrcColor:(片元产生的颜色) DstColor: (已经在颜色缓冲区中的颜色)
 			
 			CGPROGRAM
 			
@@ -65,10 +67,10 @@ Shader "Unity Shaders Book/Chapter 8/Alpha Blend" {
 				fixed3 albedo = texColor.rgb * _Color.rgb;
 				
 				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
-				
+
 				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
 				
-				return fixed4(ambient + diffuse, texColor.a * _AlphaScale);
+				return fixed4(ambient + diffuse, texColor.a * _AlphaScale);   //将alpha值进行混合,混合过程根据Blend指令自动完成
 			}
 			
 			ENDCG
