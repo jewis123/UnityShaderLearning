@@ -14,7 +14,9 @@ Shader "Unity Shaders Book/Chapter 8/Alpha Blend" {
 			Tags { "LightMode"="ForwardBase" }
 
 			ZWrite Off
-			Blend SrcAlpha OneMinusSrcAlpha
+			//开启混合,并设置混合因子 https://docs.unity3d.com/Manual/SL-Blend.html
+			//The value of this stage is multiplied by (1 - source alpha).
+			Blend SrcAlpha OneMinusSrcAlpha   
 			
 			CGPROGRAM
 			
