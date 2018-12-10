@@ -1,6 +1,12 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
+
+//说明：普通 Alpha Blend 也有和Alpha Test一样的问题，但是由于透明度混合实现透明的方式需要关闭深度写入，这会导致渲染顺序问题。
+//所以为了保证渲染顺序没有问题，我们开启两个通道，先剔除正面渲染背面，再剔除背面渲染正面，最后两个结果混合后输出到屏幕就正常了。
+//另注明：Unity会依次执行SubShader中的各个Pass
+//两个通道代码除了Cull不同完全一样
+
 Shader "Unity Shaders Book/Chapter 8/Alpha Blend With Both Side" {
 	Properties {
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)

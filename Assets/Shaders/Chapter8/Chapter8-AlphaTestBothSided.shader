@@ -1,6 +1,9 @@
 ﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
+//说明： 因为普通的AlphaTest shader 虽然是把背后的东西通过比较alpha值显现出来了，但是挡在前面的部分还是被摄象机“知道的”，
+//意思是说，前面的深度值还是记录在深度缓冲中的，所以相机还是会把没记录在深度缓冲中的背后的部分给裁剪掉，因为相机认为那部分是“看不见的”。
+//仔细观察场景8.3透明背后就会发现上述问题，于是有这个shader来处理这个问题。
 Shader "Unity Shaders Book/Chapter 8/Alpha Test With Both Side" {
 	Properties {
 		_Color ("Color Tint", Color) = (1, 1, 1, 1)
@@ -13,8 +16,10 @@ Shader "Unity Shaders Book/Chapter 8/Alpha Test With Both Side" {
 		Pass {
 			Tags { "LightMode"="ForwardBase" }
 			
-			// Turn off culling
-			Cull Off
+			//造成上述问题的原因就是Unity 默认打开 Cull back 让相机把背面剔除不渲染
+			//把剔除关闭即可，让相机同时渲染正反面
+			//另外，如果不想让相机渲染正面可以通过  Cull front实现
+			Cull Off          
 			
 			CGPROGRAM
 			
