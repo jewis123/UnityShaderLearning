@@ -59,15 +59,15 @@ Shader "Unity Shaders Book/Chapter 8/Alpha Blend" {
 			}
 			
 			fixed4 frag(v2f i) : SV_Target {
+				//begin核心代码
+				fixed4 texColor = tex2D(_MainTex, i.uv);
+				fixed3 albedo = texColor.rgb * _Color.rgb;
+				//end
+				
+				//加上光照
 				fixed3 worldNormal = normalize(i.worldNormal);
 				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
-				
-				fixed4 texColor = tex2D(_MainTex, i.uv);
-				
-				fixed3 albedo = texColor.rgb * _Color.rgb;
-				
 				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
-
 				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
 				
 				return fixed4(ambient + diffuse, texColor.a * _AlphaScale); 
