@@ -2,6 +2,9 @@
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
+
+//处理多光源时
+
 Shader "Unity Shaders Book/Chapter 9/Forward Rendering" {
 	Properties {
 		_Diffuse ("Diffuse", Color) = (1, 1, 1, 1)
@@ -59,8 +62,10 @@ Shader "Unity Shaders Book/Chapter 9/Forward Rendering" {
 				
 			 	fixed3 diffuse = _LightColor0.rgb * _Diffuse.rgb * max(0, dot(worldNormal, worldLightDir));
 
+
+				//Bline-Phone模型计算高光     详情见配书P.125
 			 	fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);
-			 	fixed3 halfDir = normalize(worldLightDir + viewDir);
+			 	fixed3 halfDir = normalize(worldLightDir + viewDir);    //点到相机向量和点到光源向量夹角一半处的中间的向量
 			 	fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
 
 				fixed atten = 1.0;
@@ -128,8 +133,10 @@ Shader "Unity Shaders Book/Chapter 9/Forward Rendering" {
 				fixed3 halfDir = normalize(worldLightDir + viewDir);
 				fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(worldNormal, halfDir)), _Gloss);
 				
+
+				//针对不同的光源设置不同的光照衰减值
 				#ifdef USING_DIRECTIONAL_LIGHT
-					fixed atten = 1.0;
+					fixed atten = 1.0;    
 				#else
 					#if defined (POINT)
 				        float3 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1)).xyz;
