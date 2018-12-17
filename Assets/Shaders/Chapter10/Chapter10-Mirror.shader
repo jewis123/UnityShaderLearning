@@ -30,7 +30,8 @@ Shader "Unity Shaders Book/Chapter 10/Mirror" {
 				o.pos = UnityObjectToClipPos(v.vertex);
 				
 				o.uv = v.texcoord;
-				// Mirror needs to filp x
+				
+				//镜面中左右相反
 				o.uv.x = 1 - o.uv.x;
 				
 				return o;
