@@ -45,14 +45,14 @@ Shader "Custom/GrabTexture"
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = ComputeGrabScreenPos(o.vertex);
+                o.uv = ComputeGrabScreenPos(o.vertex);  //计算uv对应的屏幕映射
                 return o;
             }
 
 
             fixed4 frag (v2f i) : SV_Target
             {
-                fixed4 col = tex2Dproj(_GrabTexture, i.uv);
+                fixed4 col = tex2Dproj(_GrabTexture, i.uv);  //tex2Dproj一般使用计算到的屏幕映射坐标
                 // just invert the colors
                 col.rgb = 1 - col.rgb;
                 return col;
