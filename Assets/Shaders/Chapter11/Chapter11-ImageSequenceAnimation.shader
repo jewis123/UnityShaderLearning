@@ -53,9 +53,12 @@ Shader "Unity Shaders Book/Chapter 11/Image Sequence Animation" {
 				float row = floor(time / _HorizontalAmount);
 				float column = time - row * _HorizontalAmount;
 				
-//				half2 uv = float2(i.uv.x /_HorizontalAmount, i.uv.y / _VerticalAmount);
-//				uv.x += column / _HorizontalAmount;
-//				uv.y -= row / _VerticalAmount;
+				//方法一：按照行列等分i.UV，构建每个单元块的UV范围
+				// half2 uv = float2(i.uv.x /_HorizontalAmount, i.uv.y / _VerticalAmount);
+				// uv.x += column / _HorizontalAmount;   //计算行偏移
+				// uv.y -= row / _VerticalAmount;        //计算列偏移
+
+				//整合
 				half2 uv = i.uv + half2(column, -row);
 				uv.x /=  _HorizontalAmount;
 				uv.y /= _VerticalAmount;
