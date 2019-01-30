@@ -34,9 +34,9 @@ Shader "Custom/WaveDisplacement" {
             fixed4 frag(v2f f) : SV_TARGET {
                 fixed2 changingUV = f.texcoord + _Time.x * 2; //定义噪声图的采样UV
                 fixed2 displ = tex2D(_DisMap, changingUV).xy; //获取采样色值的红、绿色值.红色控制X轴偏量，绿色控制Y轴偏量
-                displ = ((displ * 2) - 1); //将色值范围【0，1】映射到【-1，1】方便后续上下、左右移动
+                displ = ((displ * 2) - 1); //为了呈现波动感将色值范围【0，1】映射到【-1，1】
                 displ *= _Offset; //乘上幅度
-                fixed4 col = tex2D(_MainTex, f.texcoord + displ);//重新对主纹理进行采样获得最终效果
+                fixed4 col = tex2D(_MainTex, f.texcoord + displ); //重新对主纹理进行采样获得最终效果
                 return col;
             }
             ENDCG
