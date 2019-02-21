@@ -43,6 +43,7 @@ Shader "Unity Shaders Book/Chapter 11/Scrolling Background" {
 				v2f o;
 				o.pos = UnityObjectToClipPos(v.vertex);
 				
+				//frac返回小数部分
 				o.uv.xy = TRANSFORM_TEX(v.texcoord, _MainTex) + frac(float2(_ScrollX, 0.0) * _Time.y);
 				o.uv.zw = TRANSFORM_TEX(v.texcoord, _DetailTex) + frac(float2(_Scroll2X, 0.0) * _Time.y);
 				
@@ -54,7 +55,7 @@ Shader "Unity Shaders Book/Chapter 11/Scrolling Background" {
 				fixed4 secondLayer = tex2D(_DetailTex, i.uv.zw);
 				
 				fixed4 c = lerp(firstLayer, secondLayer, secondLayer.a);
-				c.rgb *= _Multiplier;
+				c.rgb *= _Multiplier;    //可做白天黑夜效果
 				
 				return c;
 			}

@@ -15,7 +15,7 @@ Shader "Unity Shaders Book/Chapter 5/False Color" {
 				fixed4 color : COLOR0;
 			};
 			
-			v2f vert(appdata_full v) {
+			v2f vert(appdata_full v) {           //跳过定义传入顶点数据的数据结构，直接使用appdata_full，获取几乎所有模型数据
 				v2f o;
 				o.pos = UnityObjectToClipPos(v.vertex);
 				

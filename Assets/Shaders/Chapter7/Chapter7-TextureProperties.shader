@@ -39,7 +39,7 @@ Shader "Unity Shaders Book/Chapter 7/Texture Properties" {
 			}
 			
 			fixed4 frag(v2f i) : SV_Target {
-				fixed4 c = tex2D(_MainTex, i.uv);
+				fixed4 c = tex2D(_MainTex, i.uv);       //uv坐标直接影响呈现
 
 				return fixed4(c.rgb, 1.0);
 			}
